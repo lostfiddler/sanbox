@@ -90,7 +90,7 @@ export default () => {
                 for the distance calculation and lets also rename that vector
                 variable to <code className="language-js">force</code>.
             </p>
-            <pre className="language-js line-numbers" data-line="2-5,8">
+            <pre className="language-js" data-line="2-5,8">
                 <code>
                     {stripIndent`
                     // The magnitude of the spring force according to Hooke's law
@@ -113,9 +113,197 @@ export default () => {
             </p>
             <h3>Example 3.10: A Spring Connection</h3>
             <canvas ref={example3_10Ref}></canvas>
+            <pre className="language-js">
+                <code>
+                    {stripIndent`
+                        class Spring {
+                            constructor(x, y, length) {
+                                this.anchor = createVector(x, y);
+                                this.restLength = length;
+                                this.k = 0.2
+                            }
+
+                            connect(bob: Bob) {
+                                let force = bob.position.copy().sub(this.anchor);
+                                let currentLength = force.mag();
+                                let stretch = currentLength - this.restLength;
+
+                                force.setMag(-1 * this.k * stretch);
+                                bob.applyForce(force);
+                            }
+
+                            display() {
+                                circle(this.anchor.x, this.anchor.y, 10);
+                            }
+
+                            showLine(bob) {
+                                line(bob.position.x, 
+                                     bob.position.y,
+                                     this.anchor.x,
+                                     this.anchor.y
+                                )
+                            }
+                        }
+                    `}
+                </code>
+            </pre>
             <h1>The Pendulum</h1>
+            <p>
+                A <b>pendulum</b> is a bob suspended by an arm from a pivot
+                (previously called the <em>anchor</em> in the spring). When the
+                pendulum swings, its arm and bob are essentially rotating around
+                the fixed point of the pivot.
+            </p>
+            <p>
+                Unlike the spring which used <em>linear</em> acceleration and
+                velocity, we're going to describe the motion of the pendulum in
+                terms of <em>angular</em> velocity.
+            </p>
+            <p>
+                This example is pretty interesting but its a bit complicated,
+                check out this{" "}
+                <a href="https://natureofcode.com/oscillation/#the-pendulum">
+                    link
+                </a>{" "}
+                for more a more complete explanation.
+            </p>
+            <p>
+                Note: right triangles make everything easier, keep an eye out
+                for them.
+            </p>
+            <p>
+                Even though we are glossing over a few questions regarding this
+                simulation, there are a few critical pieces I do want to
+                mention.
+            </p>
+            <p>
+                The length of the pendulum's arm affects the acceleration of the
+                pendulum because of the concepts of torque and moment of
+                inertia.
+            </p>
+            <p>
+                <b>Torque</b> (or ⊤) is a measure of the rotational force acting
+                on an object. In the case of a pendulum, torque is proportional
+                to both the mass of the bob and the length of the arm (
+                <span
+                    dangerouslySetInnerHTML={{
+                        __html: katex.renderToString("M\\times r"),
+                    }}
+                />
+                ) The <b>moment of inertia</b> (or <em>I</em>) of a pendulum is
+                a measure of the amount of difficulty in rotating the pendulum
+                around the pivot point. It is proportional to the mass of the
+                bob and the <em>square</em> of the length of the arm (
+                <span
+                    dangerouslySetInnerHTML={{
+                        __html: katex.renderToString("Mr^2"),
+                    }}
+                />
+                )
+            </p>
+            <pre className="language-js">
+                <code>
+                    {stripIndent`
+                    class Pendulum {
+                        constructor() {
+                            this.r = ????;
+                            this.angle = ????;
+                            this.angleVelocity = ????;
+                            this.angleAcceleration = ????;
+                        }
+                    }
+                `}
+                </code>
+            </pre>
+            <pre className="language-js">
+                <code>
+                    {stripIndent`
+                    update() {
+                        let gravity = 0.4;
+
+                        // Calculate acceleration according to the formula.
+                        this.angleAcceleration = -1 * gravity * Math.sin(this.angle) / this.r
+
+                        this.angleVelocity += this.angleAcceleration;
+                        this.angle += this.angleVelocity;
+                    }
+                `}
+                </code>
+            </pre>
             <h3>Example 3.11: Swinging Pendulum</h3>
             <canvas ref={example3_11Ref}></canvas>
+            <pre className="language-js">
+                <code>
+                {stripIndent`
+                    class Pendulum {
+                        constructor(x, y, r) {
+                            this.pivot = p5.createVector(x, y)
+                            this.bob = p5.createVector();
+                            this.r = r;
+                            this.angle = Math.PI / 4;
+                            this.angleVelocity = 0;
+                            this.angleAcceleration = 0;
+                            this.damping = 0.99;
+                            this.ballr = 24;
+                        }
+
+                        update() {
+                            let gravity = 0.4;
+
+                            // Formula for angular acceleration
+                            this.angleAcceleration = 
+                                (-1 * gravity / this.r) * Math.sin(this.angle)
+
+                            // Standard angular motion algorithm
+                            this.angleVelocity += this.angleAcceleration;
+                            this.angle += this.angleVelocity;
+
+                            // Apply some damping
+                            this.angleVelocity *= this.damping
+                        }
+
+                        display() {
+                            // Apply polar-to-Cartesian conversion. Instead of
+                            // creating a new vector each time, use set() to
+                            // update the bob's position
+                            this.bob.set(this.r * Math.sin(this.angle),
+                                         this.r * Math.cos(this.angle))
+                            this.bob.add(this.pivot)
+
+                            this.line(this.pivot.x, this.pivot.y, this.bob.x, this.bob.y);
+                            this.circle(this.bob.x, this.bob.y, this.ballr)
+                        }
+
+                        line(startX, startY, endX, endY){
+                            ctx.beginPath()
+                            ctx.moveTo(startX, startY);
+                            ctx.lineTo(endX, endY)
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
+                        circle(x, y, r){
+                            ctx.beginPath();
+                            ctx.arc(x, y, r, 0, Math.PI * 2)
+                            ctx.stroke();
+                            ctx.fill();
+                            ctx.closePath();
+                        }
+                    }
+
+                    const pendulum = new Pendulum(canvas.width / 2, 5, 200);
+
+                    function animate() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+                        pendulum.update()
+                        pendulum.display();
+                        requestAnimationFrame(animate)
+                    }
+
+                    animate()
+                `}
+                </code>
+            </pre>
         </div>
     );
 };
@@ -205,14 +393,14 @@ function example3_10(c: HTMLCanvasElement) {
 
         applyForce(force: Vector) {
             let f = force.copy();
-            f.div(this.mass)
+            f.div(this.mass);
 
             this.acceleration.add(f);
         }
 
         update() {
             this.velocity.add(this.acceleration);
-            this.velocity.mult(this.damping)
+            this.velocity.mult(this.damping);
             this.position.add(this.velocity);
 
             if (this.mousePressed) {
@@ -252,12 +440,12 @@ function example3_10(c: HTMLCanvasElement) {
         }
 
         connect(bob: Bob) {
-            let force = bob.position.copy().sub(this.anchor)
+            let force = bob.position.copy().sub(this.anchor);
             let currentLength = force.mag();
             let stretch = currentLength - this.restLength;
 
             force.setMag(-1 * this.k * stretch);
-            bob.applyForce(force)
+            bob.applyForce(force);
         }
 
         constrainLength(bob, minlen, maxlen) {
@@ -304,7 +492,7 @@ function example3_10(c: HTMLCanvasElement) {
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        bob.applyForce(gravity)
+        bob.applyForce(gravity);
         bob.update();
         spring.connect(bob);
 
@@ -320,4 +508,124 @@ function example3_10(c: HTMLCanvasElement) {
     animate();
 }
 
-function example3_11(c: HTMLCanvasElement) {}
+function example3_11(c: HTMLCanvasElement) {
+    const canvas = c;
+    const ctx = canvas.getContext("2d")!;
+
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = canvas.width / CANVAS_WIDTH_RATIO;
+
+    class Pendulum {
+        pivot: Vector;
+        bob: Vector;
+        r: number;
+        angle: number;
+        angleVelocity: number;
+        angleAcceleration: number;
+        damping: number;
+        ballr: number;
+        mouse: Vector;
+        draggable: Boolean;
+        mousePressed: Boolean;
+        offset: Vector;
+
+        constructor(x, y, r) {
+            this.pivot = p5.createVector(x, y);
+            this.bob = p5.createVector();
+            this.r = r;
+            this.angle = Math.PI / 4;
+            this.angleVelocity = 0;
+            this.angleAcceleration = 0;
+            this.damping = 0.99;
+            this.ballr = 24;
+            this.mouse = p5.createVector();
+            this.offset = p5.createVector();
+            this.draggable = false;
+            this.mousePressed = false;
+
+            canvas.onmousemove = (e) => {
+                [this.mouse.x, this.mouse.y] = getMousePosition(e);
+
+                // check if mouse is in area of circle
+                if (
+                    this.mouse.x > this.bob.x - this.ballr &&
+                    this.mouse.x < this.bob.x + this.ballr &&
+                    this.mouse.y > this.bob.y - this.ballr &&
+                    this.mouse.y < this.bob.y + this.ballr
+                ) {
+                    this.draggable = true;
+                } else {
+                    this.draggable = false;
+                }
+            };
+
+            canvas.onmousedown = (e) => {
+                if (this.draggable) {
+                    this.mousePressed = true;
+                    this.offset = this.bob.sub(this.mouse);
+                }
+            };
+
+            canvas.onmouseup = (e) => {
+                this.mousePressed = false;
+            };
+        }
+
+        update() {
+            if (!this.mousePressed){
+                let gravity = 0.4;
+                this.angleAcceleration =
+                    ((-1 * gravity) / this.r) * Math.sin(this.angle);
+                this.angleVelocity += this.angleAcceleration;
+                this.angle += this.angleVelocity;
+                this.angleVelocity *= this.damping;
+            }
+        }
+
+        display() {
+            this.bob.set(
+                this.r * Math.sin(this.angle),
+                this.r * Math.cos(this.angle)
+            );
+            this.bob.add(this.pivot);
+
+            this.line(this.pivot.x, this.pivot.y, this.bob.x, this.bob.y);
+            this.circle(this.bob.x, this.bob.y, this.ballr);
+        }
+
+        drag() {
+            if (this.mousePressed) {
+                let diff = this.pivot.copy().sub(this.mouse)
+                this.angle = Math.atan2(-1 * diff.y, diff.x) - p5.radians(90)
+            }
+        }
+
+        line(startX, startY, endX, endY) {
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            ctx.closePath();
+        }
+        circle(x, y, r) {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+
+    const pendulum = new Pendulum(canvas.width / 2, 5, 200);
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        pendulum.update();
+        pendulum.display();
+        pendulum.drag();
+        requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate)
+}
