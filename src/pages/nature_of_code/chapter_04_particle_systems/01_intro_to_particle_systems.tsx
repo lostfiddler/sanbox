@@ -137,8 +137,30 @@ export default () => {
                         addParticle() {
                             this.particles.push(new Particle())
                         }
+
+                        run() {
+                            this.addParticle();
+
+                            for (let i = this.particles.length - 1; i > 0; i--) {
+                                this.particles[i].run();
+
+                                if (this.particles[i].isDead()) {
+                                    this.particles.splice(i, 1);
+                                }
+                            }
+                        }
                     }
                 `}
+                </code>
+            </pre>
+            <p>Now in our main animation/game loop:</p>
+            <pre className="language-js">
+                <code>
+                    {stripIndent`
+                        function animate() {
+                            emitter.run();
+                        }
+                    `}
                 </code>
             </pre>
             <h3>Example 4.3: A Single Particle Emitter</h3>
@@ -171,7 +193,7 @@ export default () => {
             </p>
             <pre className="language-js">
                 <code>
-                {stripIndent`
+                    {stripIndent`
                     canvas.onclick = (e) => {
                         let [x, y] = getMousePosition(e)
 
@@ -199,7 +221,7 @@ export default () => {
     );
 };
 
-class Particle {
+export class Particle {
     graphics: CanvasRenderingContext2D;
     physics: {};
     x: number;
@@ -209,14 +231,8 @@ class Particle {
     acceleration: vec2;
     lifespan: number;
 
-    constructor(
-        graphics: CanvasRenderingContext2D,
-        physics: {},
-        x?: number,
-        y?: number
-    ) {
+    constructor(graphics: CanvasRenderingContext2D, x?: number, y?: number) {
         this.graphics = graphics;
-        this.physics = physics;
         this.position = vec2.fromValues(
             x ? x : this.graphics.canvas.width / 2,
             y ? y : 50
@@ -260,7 +276,7 @@ class Particle {
     }
 
     run() {
-        this.applyForce(this.physics.gravity);
+        this.applyForce(physics.gravity);
         this.update();
         this.draw();
     }
@@ -269,14 +285,12 @@ class Particle {
 class Emitter {
     particles: Particle[];
     graphics: CanvasRenderingContext2D;
-    physics: {};
     x: number;
     y: number;
 
-    constructor(graphics, physics, x, y) {
+    constructor(graphics, x, y) {
         this.particles = [];
         this.graphics = graphics;
-        this.physics = physics;
         this.x = x;
         this.y = y;
     }
@@ -285,7 +299,6 @@ class Emitter {
         this.particles.push(
             new Particle(
                 this.graphics,
-                this.physics,
                 this.x ? this.x : undefined,
                 this.y ? this.y : undefined
             )
@@ -315,7 +328,7 @@ function example4_1(c: HTMLCanvasElement) {
     graphics.canvas.width = CANVAS_WIDTH;
     graphics.canvas.height = graphics.canvas.width / CANVAS_WIDTH_RATIO;
 
-    let particle = new Particle(graphics, physics);
+    let particle = new Particle(graphics);
 
     function animate() {
         requestAnimationFrame(animate);
@@ -323,7 +336,7 @@ function example4_1(c: HTMLCanvasElement) {
 
         particle.run();
         if (particle.isDead()) {
-            particle = new Particle(graphics, physics);
+            particle = new Particle(graphics);
         }
     }
 
@@ -341,7 +354,7 @@ function example4_2(c: HTMLCanvasElement) {
     function animate() {
         requestAnimationFrame(animate);
         graphics.clearRect(0, 0, graphics.canvas.width, graphics.canvas.height);
-        particles.push(new Particle(graphics, physics));
+        particles.push(new Particle(graphics));
 
         for (let i = particles.length - 1; i > 0; i--) {
             particles[i].run();
@@ -360,7 +373,7 @@ function example4_3(c: HTMLCanvasElement) {
     graphics.canvas.width = CANVAS_WIDTH;
     graphics.canvas.height = graphics.canvas.width / CANVAS_WIDTH_RATIO;
 
-    const emitter = new Emitter(graphics, physics);
+    const emitter = new Emitter(graphics);
 
     function animate() {
         requestAnimationFrame(animate);
@@ -382,7 +395,7 @@ function example4_4(c: HTMLCanvasElement) {
     graphics.canvas.onclick = (e) => {
         const [x, y] = getMousePosition(e);
 
-        emitters.push(new Emitter(graphics, physics, x, y));
+        emitters.push(new Emitter(graphics, x, y));
     };
 
     function animate() {
