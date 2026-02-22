@@ -1,5 +1,12 @@
-import React from 'react';
+import React from "react";
 
 export default () => {
-    return <div>home page</div>
-}
+    return (
+        <div>
+            <p>
+                How did you find this? What are you doing here? Well since
+                you're here I guess I love you.
+            </p>
+        </div>
+    );
+};

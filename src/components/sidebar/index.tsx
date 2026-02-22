@@ -67,6 +67,7 @@ export default () => {
                     >
                         <summary>Nature of Code</summary>
                         <ul>
+                            <li className="chapter">Exercises</li>
                             <li className="chapter">Chapter 00 Randomness</li>
                             <li>
                                 <a href="/random_walks">01 - A Random Walk</a>

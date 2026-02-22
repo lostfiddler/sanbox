@@ -15,6 +15,7 @@ export default () => {
         example1_4(canvasRefExample1_4.current!);
         example1_5(canvasRefExample1_5.current!);
         example1_6(canvasRefExample1_6.current!);
+        console.log(p5.map(23, 13, 40, 0, 18))
     });
 
     return (
@@ -201,10 +202,14 @@ function example1_5(c: HTMLCanvasElement) {
 
     let center = p5.createVector(canvas.width / 2, canvas.height / 2);
     let mouse = p5.createVector(0, 0);
+    let m;
 
     canvas.onmousemove = (e) => {
         mouse = getMousePosition(e);
         mouse.sub(center);
+        m = mouse.mag();
+        p5.constrain(m, 10, 20)
+        console.log(m)
     };
 
     (function draw() {
@@ -224,7 +229,7 @@ function example1_5(c: HTMLCanvasElement) {
         }
 
         {
-            ctx.fillRect(10, 10, mouse.mag(), 10);
+            ctx.fillRect(10, 10, m, 10);
         }
         requestAnimationFrame(draw);
     })();
@@ -353,25 +358,28 @@ const example1_4CodeBlock = stripIndent`
 })();
 `
 const example1_5CodeBlock = stripIndent`
+let center = p5.createVector(canvas.width / 2, canvas.height / 2);
+let mouse = p5.createVector(0, 0);
+let mag;
+
+canvas.onmousemove = (e) => {
+    mouse = getMousePosition(e);
+    mouse.sub(center);
+    mag = mouse.mag();
+};
+
 (function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    {
-        ctx.save();
-        ctx.translate(center.x, center.y);
-    }
+    ctx.save();
+    ctx.translate(center.x, center.y);
 
-    {
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.stroke();
-        ctx.restore();
-    }
+    line(0, 0, mouse.x, mouse.y)
 
-    {
-        ctx.fillRect(10, 10, mouse.mag(), 10);
-    }
+    ctx.fillRect(10, 10, mag, 10);
+
+    ctx.restore();
+
     requestAnimationFrame(draw);
 })()
 `
