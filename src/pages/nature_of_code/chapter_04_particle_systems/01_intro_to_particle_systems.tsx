@@ -282,7 +282,7 @@ export class Particle {
     }
 }
 
-class Emitter {
+export class Emitter {
     particles: Particle[];
     graphics: CanvasRenderingContext2D;
     x: number;

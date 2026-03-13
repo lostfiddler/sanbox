@@ -1,6 +1,6 @@
 import { stripIndent } from "common-tags";
 import React, { useRef, useEffect } from "react";
-import { Particle } from "./01_intro_to_particle_systems";
+import { Particle, Emitter } from "./01_intro_to_particle_systems";
 import { CANVAS_WIDTH, CANVAS_WIDTH_RATIO, p5 } from "../../../../constants";
 import { vec2 } from "gl-matrix";
 import { Vector } from "p5";
@@ -265,17 +265,9 @@ class Confetti extends Particle {
     }
 }
 
-class Emitter {
-    particles: Particle[];
-    graphics: CanvasRenderingContext2D;
-    x: number;
-    y: number;
-
+class Emitter4_5 extends Emitter {
     constructor(graphics, x, y) {
-        this.particles = [];
-        this.graphics = graphics;
-        this.x = x;
-        this.y = y;
+        super(graphics, x, y)
     }
 
     addParticle() {
@@ -313,7 +305,7 @@ class Emitter {
     }
 }
 
-class Emitter4_6 extends Emitter {
+export class Emitter4_6 extends Emitter {
     constructor(graphics, x, y) {
         super(graphics, x, y);
     }
@@ -394,7 +386,7 @@ function example4_5(c: HTMLCanvasElement) {
     graphics.canvas.width = CANVAS_WIDTH;
     graphics.canvas.height = graphics.canvas.width / CANVAS_WIDTH_RATIO;
 
-    const emitter = new Emitter(graphics, graphics.canvas.width / 2, 50);
+    const emitter = new Emitter4_5(graphics, graphics.canvas.width / 2, 50);
 
     function animate() {
         requestAnimationFrame(animate);
