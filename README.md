@@ -1,6 +1,7 @@
 ❤️
 
-A place for my notes on [ The Nature of Code ](https://natureofcode.com/)
-by Daniel Shiffman.
+A programming notebook.
 
-Built with react.
+## Features
+- Notes on [ The Nature of Code ](https://natureofcode.com/) by Daniel Shiffman.
+- Miscellaneous notes on programming graphics and interactive applications.
