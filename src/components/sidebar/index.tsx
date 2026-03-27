@@ -162,6 +162,44 @@ export default () => {
                                     Chapter 05 Autonomous Agents
                                 </a>
                             </li>
+                            <li>
+                                <a href="/forces_from_within">
+                                    01 - Forces from Within
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/vehicles_and_steering">
+                                    02 - Vehicles & Steering
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/flow_fields">
+                                    03 - Flow Fields
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/path_following">
+                                    04 - Path Following
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/complex_systems">
+                                    05 - Complex Systems
+                                </a>
+                            </li>
+                        </ul>
+                    </details>
+                    <details
+                        ref={(el) => {
+                            if (el) details.push(el);
+                        }}
+                        data-name="data_visuals"
+                    >
+                        <summary>Data Visuals</summary>
+                        <ul>
+                            <li>
+                                <a href="/idle">idle</a>
+                            </li>
                         </ul>
                     </details>
                     <details
@@ -234,6 +272,9 @@ export default () => {
                             </a>
                             <a href="/rapier">
                                 <li>Rapier</li>
+                            </a>
+                            <a href="/grid_study">
+                                <li>Grid Study</li>
                             </a>
                         </ul>
                     </details>

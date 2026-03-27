@@ -26,6 +26,11 @@ import ParticleBehaviors from '../../pages/nature_of_code/chapter_04_particle_sy
 import TexturesAndBlending from '../../pages/nature_of_code/chapter_04_particle_systems/03_image_texture_and_additive_blending.tsx';
 // Nature of Code - Chapter 05
 import AutonomousAgents from '../../pages/nature_of_code/chapter_05_autonomous_agents/index.tsx'
+import ForcesFromWithin from "../../pages/nature_of_code/chapter_05_autonomous_agents/01_forces_from_within.tsx";
+import VehiclesAndSteering from "../../pages/nature_of_code/chapter_05_autonomous_agents/02_vehicles_and_steering.tsx";
+import FLowFields from "../../pages/nature_of_code/chapter_05_autonomous_agents/03_flow_fields.tsx";
+import PathFollowing from "../../pages/nature_of_code/chapter_05_autonomous_agents/04_path_following.tsx";
+import ComplexSystems from "../../pages/nature_of_code/chapter_05_autonomous_agents/05_complex_systems.tsx";
 // HTML/CSS
 import MousePosition from "../../pages/html_css/mouse_position.tsx";
 import DynamicBezierCurves from "../../pages/html_css/dynamic_bezier_curves.tsx";
@@ -42,6 +47,9 @@ import BarrenRoom from "../../pages/arcade/barren_room/";
 import Archer from "../../pages/arcade/archer.tsx";
 import ThrottlingFPS from "../../pages/arcade/throttling.tsx";
 import Rapier from "../../pages/arcade/rapier.tsx";
+import GridStudy from "../../pages/arcade/grid_study";
+// Data Visuals
+import Idle from "../../pages/data_visuals/idle.tsx";
 
 export default [
     { path: "/", component: <Home /> },
@@ -85,6 +93,11 @@ export default [
     { path: "/textures_and_blending", component: <TexturesAndBlending />},
     // Nature of Code - Chapter 05
     {path: "/autonomous_agents", component: <AutonomousAgents />},
+    {path: "/forces_from_within", component: <ForcesFromWithin />},
+    {path: "/vehicles_and_steering", component: <VehiclesAndSteering />},
+    {path: "/flow_fields", component: <FLowFields />},
+    {path: "/path_following", component: <PathFollowing />},
+    {path: "/complex_systems", component: <ComplexSystems />},
     // html/css
     { path: "/get_mouse_position", component: <MousePosition /> },
     { path: "/dynamic_bezier_curves", component: <DynamicBezierCurves /> },
@@ -101,4 +114,7 @@ export default [
     { path: "/archer", component: <Archer /> },
     { path: "/throttling_fps", component: <ThrottlingFPS />},
     { path: "/rapier", component: <Rapier />},
+    { path: "/grid_study", component: <GridStudy />}, 
+    // data visuals
+    {path: "/idle", component: <Idle />},
 ];
